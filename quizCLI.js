@@ -3,9 +3,9 @@ const chalk = require('chalk');
 
 class Question {
   static score = 0;
-  constructor(question, optionA, optionB, optionC, optionD, correctOptionIndex) {
+  constructor(question, optionsArray, correctOptionIndex) {
     this.question = question;
-    this.optionsArray = [optionA, optionB, optionC, optionD];
+    this.optionsArray = optionsArray;
     this.correctOptionIndex = correctOptionIndex;
   }
   printQuestion() {
@@ -18,13 +18,21 @@ class Question {
     )
   }
   checkUserInput(userAnsIndex) {
-    if ((userAnsIndex - 1) == this.correctOptionIndex) {
+    if ((userAnsIndex - 1) === this.correctOptionIndex) {
       console.log(chalk.green("Congratulations, you got it right"));
       return true;
     } else {
       console.log(chalk.red(`OOPS! you got it wrong, correct option is ${this.optionsArray[this.correctOptionIndex]}`));
       return false;
     }
+  }
+}
+// Function for input valdation
+const validateInput = (numOfOptions, userInput) => {
+  if (userInput >= 1 && userInput <= numOfOptions) {
+    return true;
+  } else {
+    return false;
   }
 }
 const welcomeFunction = () => {
@@ -44,9 +52,14 @@ const welcomeFunction = () => {
 
 const startGame = () => {
   questionsArray.forEach(questionObj => {
+    let numOfOptions = questionObj.optionsArray.length;
     questionObj.printQuestion();
     questionObj.printOptions();
-    let userAnswer = (readlineSync.question("Enter correct option number : "));
+    let userAnswer = parseInt(readlineSync.question("Enter correct option number : "));
+    if (!validateInput(numOfOptions, userAnswer)) {
+      console.log(chalk.red("Invalid Input"));
+      return
+    }
     if (questionObj.checkUserInput(userAnswer)) {
       Question.score += 1;
       console.log("score updated!");
@@ -61,15 +74,15 @@ const endGame = () => {
 }
 
 questionsArray = [];
-question1 = new Question("What is the capital of ARUNACHAL PRADESH", "Itanagar", "Guwahati", "Kohima", "Imphal", 0);
+question1 = new Question("What is the capital of ARUNACHAL PRADESH", ["Itanagar", "Guwahati", "Kohima"], 0);
 questionsArray.push(question1);
-question2 = new Question("What is the capital of UTTARAKHAND", "Dehradun", "Haridwar", "Nanital", "Roorkee", 0);
+question2 = new Question("What is the capital of UTTARAKHAND", ["Dehradun", "Haridwar", "Nanital", "Roorkee"], 0);
 questionsArray.push(question2);
-question3 = new Question("What is the capital of ASSAM", "Itanagar", "Guwahati", "Kohima", "Imphal", 1);
+question3 = new Question("What is the capital of ASSAM", ["Itanagar", "Guwahati", "Kohima", "Imphal"], 1);
 questionsArray.push(question3);
-question4 = new Question("What is the capital of ORISSA", "Jamshedpur", "Puri", "Bhubaneswar", "Raipur", 2);
+question4 = new Question("What is the capital of ORISSA", ["Jamshedpur", "Puri", "Bhubaneswar", "Raipur"], 2);
 questionsArray.push(question4);
-question5 = new Question("What is the capital of MANIPUR", "Itanagar", "Guwahati", "Kohima", "Imphal", 3);
+question5 = new Question("What is the capital of MANIPUR", ["Itanagar", "Guwahati", "Kohima", "Imphal"], 3);
 questionsArray.push(question5);
 
 console.log("-------------------------------------------------------------------------------");
